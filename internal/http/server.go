@@ -19,7 +19,7 @@ type Server struct {
 	idleConsCh chan struct{}
 
 	// не самая лучшая практика. Обычно делается на уровне 3 слоев:
-	// бизнес логика, HTTP хэндлеры, база данных (в рамка курса ок)
+	// бизнес логика, HTTP хэндлеры, база данных (пока не знаю как это сделать)
 	Address string
 	content content.Content
 }
@@ -42,7 +42,7 @@ func (s *Server) basicHandler() chi.Router {
 
 	// Create
 	r.Post("/content", func(w http.ResponseWriter, r *http.Request) {
-		nContent := new(models.Content)
+		nContent := new(models.Anime)
 		if err := json.NewDecoder(r.Body).Decode(nContent); err != nil {
 			_, _ = fmt.Fprintf(w, "Unknown error: %v", err)
 			return
@@ -73,7 +73,7 @@ func (s *Server) basicHandler() chi.Router {
 
 	// Update
 	r.Put("/content", func(w http.ResponseWriter, r *http.Request) {
-		nContent := new(models.Content)
+		nContent := new(models.Anime)
 		if err := json.NewDecoder(r.Body).Decode(nContent); err != nil {
 			_, _ = fmt.Fprintf(w, "Unknown error: %v", err)
 			return
