@@ -3,7 +3,7 @@
   <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.43">
     <root id="1">
       <DateStyle>dmy</DateStyle>
-      <IntrospectionStateNumber>860</IntrospectionStateNumber>
+      <IntrospectionStateNumber>893</IntrospectionStateNumber>
       <ServerVersion>15.2</ServerVersion>
       <StartupTime>1681516804</StartupTime>
       <TimeZones>true ACDT
@@ -801,7 +801,7 @@ false Zulu
 13183||10|C|G
 13183||-9223372036854775808|U|G
 13183||10|U|G</Grants>
-      <IntrospectionStateNumber>860</IntrospectionStateNumber>
+      <IntrospectionStateNumber>893</IntrospectionStateNumber>
       <ObjectId>16458</ObjectId>
       <Relations>sequence|table|16494|16495|1
 sequence|table|16514|16515|1
@@ -4220,7 +4220,7 @@ sequence|table|16568|16569|1
     <schema id="262" parent="2" name="public">
       <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <IntrospectionStateNumber>860</IntrospectionStateNumber>
+      <IntrospectionStateNumber>893</IntrospectionStateNumber>
       <ObjectId>2200</ObjectId>
       <StateNumber>518</StateNumber>
       <OwnerName>pg_database_owner</OwnerName>
@@ -4302,17 +4302,17 @@ sequence|table|16568|16569|1
       <StateNumber>844</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <column id="275" parent="267" name="release_year">
+    <column id="275" parent="267" name="year">
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
       <Position>6</Position>
-      <StateNumber>844</StateNumber>
+      <StateNumber>870</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <column id="276" parent="267" name="image_url">
+    <column id="276" parent="267" name="image">
       <DataType>text|0s</DataType>
       <Position>7</Position>
-      <StateNumber>859</StateNumber>
+      <StateNumber>873</StateNumber>
       <TypeId>25</TypeId>
     </column>
     <index id="277" parent="267" name="anime_pkey">
@@ -4339,22 +4339,22 @@ sequence|table|16568|16569|1
       <StateNumber>758</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <column id="280" parent="268" name="user_id">
+    <column id="280" parent="268" name="userID">
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>758</StateNumber>
+      <StateNumber>883</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <column id="281" parent="268" name="content_id">
+    <column id="281" parent="268" name="contentID">
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
-      <StateNumber>758</StateNumber>
+      <StateNumber>886</StateNumber>
       <TypeId>23</TypeId>
     </column>
     <foreign-key id="282" parent="268" name="favorites_user_id_fkey">
-      <ColNames>user_id</ColNames>
+      <ColNames>userID</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16521</ObjectId>
       <RefColNames>id</RefColNames>
@@ -4388,22 +4388,22 @@ sequence|table|16568|16569|1
       <StateNumber>760</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <column id="286" parent="269" name="user_id">
+    <column id="286" parent="269" name="userID">
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>760</StateNumber>
+      <StateNumber>889</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <column id="287" parent="269" name="content_id">
+    <column id="287" parent="269" name="contentID">
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
-      <StateNumber>760</StateNumber>
+      <StateNumber>892</StateNumber>
       <TypeId>23</TypeId>
     </column>
     <foreign-key id="288" parent="269" name="recommendations_user_id_fkey">
-      <ColNames>user_id</ColNames>
+      <ColNames>userID</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16556</ObjectId>
       <RefColNames>id</RefColNames>

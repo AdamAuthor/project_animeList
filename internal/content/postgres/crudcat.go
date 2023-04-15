@@ -4,6 +4,7 @@ import (
 	"animeList/internal/content"
 	"animeList/internal/models"
 	"context"
+	"fmt"
 	_ "github.com/jackc/pgx/stdlib"
 	_ "github.com/jackc/pgx/v5"
 	"github.com/jmoiron/sqlx"
@@ -39,7 +40,7 @@ func (D *DB) Close() error {
 }
 
 func (D *DB) Create(ctx context.Context, content *models.Anime) error {
-	_, err := D.conn.Exec("INSERT INTO anime(title, author, image_url, genre, release_year) VALUES ($1, $2, $3, $4, $5)", content.Title, content.Author, content.ImageURL, content.Genre, content.ReleaseYear)
+	_, err := D.conn.Exec("INSERT INTO anime(title, author, genre, year, image) VALUES ($1, $2, $3, $4, $5)", content.Title, content.Author, content.Genre, content.ReleaseYear, content.ImageURL)
 
 	if err != nil {
 		return err
@@ -47,11 +48,24 @@ func (D *DB) Create(ctx context.Context, content *models.Anime) error {
 	return nil
 }
 
-func (D *DB) All(ctx context.Context) ([]*models.Anime, error) {
-	anime := []*models.Anime{}
-	if err := D.conn.Get(&anime, "SELECT *  FROM anime"); err != nil {
+func (D *DB) All(ctx context.Context, filter *models.ContentFilter) ([]*models.Anime, error) {
+	var anime []*models.Anime
+	basicQuery := "SELECT * FROM anime"
+
+	if filter.Query != nil {
+		basicQuery = fmt.Sprintf("%s WHERE title ILIKE $1", basicQuery)
+		queryArg := "%" + *filter.Query + "%"
+		if err := D.conn.Select(&anime, basicQuery, queryArg); err != nil {
+			return nil, err
+		}
+
+		return anime, nil
+	}
+
+	if err := D.conn.Select(&anime, basicQuery); err != nil {
 		return nil, err
 	}
+
 	return anime, nil
 }
 

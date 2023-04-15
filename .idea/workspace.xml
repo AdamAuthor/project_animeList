@@ -8,8 +8,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/af4bc48e-4af4-4e7e-ae24-6b452cec8376.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/af4bc48e-4af4-4e7e-ae24-6b452cec8376.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/af4bc48e-4af4-4e7e-ae24-6b452cec8376/storage_v2/_src_/database/animeList.MkvRQg/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/af4bc48e-4af4-4e7e-ae24-6b452cec8376/storage_v2/_src_/database/animeList.MkvRQg/schema/public.abK9xQ.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/content/content.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/content/content.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/content/postgres/crudcat.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/content/postgres/crudcat.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/http/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/http/server.go" afterDir="false" />
@@ -88,5 +86,16 @@
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
+          <url>file://$PROJECT_DIR$/internal/content/postgres/crudcat.go</url>
+          <line>54</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
