@@ -4,7 +4,8 @@ import (
 	"animeList/internal/content"
 	"animeList/internal/models"
 	"context"
-	"fmt"
+	_ "github.com/jackc/pgx/stdlib"
+	_ "github.com/jackc/pgx/v5"
 	"github.com/jmoiron/sqlx"
 	"log"
 )
@@ -38,7 +39,7 @@ func (D *DB) Close() error {
 }
 
 func (D *DB) Create(ctx context.Context, content *models.Anime) error {
-	_, err := D.conn.Exec("INSERT INTO content(title, author, image_url, genre, release_year) VALUES ($1, $2, $3, $4, $5)", content.Title, content.Author, content.ImageURL, content.Genre, content.ReleaseYear)
+	_, err := D.conn.Exec("INSERT INTO anime(title, author, image_url, genre, release_year) VALUES ($1, $2, $3, $4, $5)", content.Title, content.Author, content.ImageURL, content.Genre, content.ReleaseYear)
 
 	if err != nil {
 		return err
@@ -46,37 +47,24 @@ func (D *DB) Create(ctx context.Context, content *models.Anime) error {
 	return nil
 }
 
-func (D *DB) All(ctx context.Context, filter *models.ContentFilter) ([]*models.Anime, error) {
-	con := make([]*models.Anime, 0)
-	basicQuery := "SELECT * FROM content"
-
-	if filter.Query != nil {
-		basicQuery = fmt.Sprintf("%s WHERE name ILIKE $1", basicQuery)
-
-		if err := D.conn.Select(&con, basicQuery, "%"+*filter.Query+"%"); err != nil {
-			return nil, err
-		}
-
-		return con, nil
-	}
-
-	if err := D.conn.Select(&con, basicQuery); err != nil {
+func (D *DB) All(ctx context.Context) ([]*models.Anime, error) {
+	anime := []*models.Anime{}
+	if err := D.conn.Get(&anime, "SELECT *  FROM anime"); err != nil {
 		return nil, err
 	}
-
-	return con, nil
+	return anime, nil
 }
 
 func (D *DB) ByID(ctx context.Context, id int) (*models.Anime, error) {
 	con := new(models.Anime)
-	if err := D.conn.Get(con, "SELECT * FROM content WHERE id=$1", id); err != nil {
+	if err := D.conn.Get(con, "SELECT * FROM anime WHERE id=$1", id); err != nil {
 		return nil, err
 	}
 	return con, nil
 }
 
 func (D *DB) Update(ctx context.Context, con *models.Anime) error {
-	_, err := D.conn.Exec("UPDATE content SET title = $1, author = $2, image_url = $3, genre = $4, release_year = $5 WHERE id = $6", con.Title, con.Author, con.ImageURL, con.Genre, con.ReleaseYear, con.ID)
+	_, err := D.conn.Exec("UPDATE anime SET title = $1, author = $2, image_url = $3, genre = $4, release_year = $5 WHERE id = $6", con.Title, con.Author, con.ImageURL, con.Genre, con.ReleaseYear, con.ID)
 
 	if err != nil {
 		return err
@@ -85,7 +73,7 @@ func (D *DB) Update(ctx context.Context, con *models.Anime) error {
 }
 
 func (D *DB) Delete(ctx context.Context, id int) error {
-	_, err := D.conn.Exec("DELETE FROM content WHERE id = $1", id)
+	_, err := D.conn.Exec("DELETE FROM anime WHERE id = $1", id)
 	if err != nil {
 		return err
 	}

@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"log"
 	"net/http"
 	"strconv"
@@ -44,14 +45,28 @@ func (s *Server) basicHandler() chi.Router {
 	r.Post("/content", func(w http.ResponseWriter, r *http.Request) {
 		nContent := new(models.Anime)
 		if err := json.NewDecoder(r.Body).Decode(nContent); err != nil {
-			_, _ = fmt.Fprintf(w, "Unknown error: %v", err)
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			fmt.Fprintf(w, "Unknown error: %v", err)
 			return
 		}
 
 		err := s.content.Create(r.Context(), nContent)
 		if err != nil {
-			return
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
 		}
+		w.WriteHeader(http.StatusCreated)
+	})
+
+	// Read All
+	r.Get("/content", func(w http.ResponseWriter, r *http.Request) {
+		nContent, err := s.content.All(r.Context())
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
+		}
+
+		render.JSON(w, r, nContent)
 	})
 
 	// Read by id
@@ -59,12 +74,15 @@ func (s *Server) basicHandler() chi.Router {
 		idStr := chi.URLParam(r, "id")
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Fprintf(w, "Unknown error: %v", err)
 			return
 		}
 
 		nContent, err := s.content.ByID(r.Context(), id)
 		if err != nil {
-			_, _ = fmt.Fprintf(w, "Unknown error: %v", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "Unknown error: %v", err)
 			return
 		}
 
@@ -75,12 +93,28 @@ func (s *Server) basicHandler() chi.Router {
 	r.Put("/content", func(w http.ResponseWriter, r *http.Request) {
 		nContent := new(models.Anime)
 		if err := json.NewDecoder(r.Body).Decode(nContent); err != nil {
-			_, _ = fmt.Fprintf(w, "Unknown error: %v", err)
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			fmt.Fprintf(w, "Unknown error: %v", err)
 			return
 		}
 
-		err := s.content.Update(r.Context(), nContent)
+		err := validation.ValidateStruct(
+			nContent,
+			validation.Field(&nContent.Title, validation.Required),
+			validation.Field(&nContent.Genre, validation.Required),
+			validation.Field(&nContent.ImageURL, validation.Required),
+			validation.Field(&nContent.Author, validation.Required),
+			validation.Field(&nContent.ReleaseYear, validation.Required))
 		if err != nil {
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			fmt.Fprintf(w, "Unknown error: %v", err)
+			return
+		}
+
+		err = s.content.Update(r.Context(), nContent)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "Unknown error: %v", err)
 			return
 		}
 	})
@@ -90,9 +124,16 @@ func (s *Server) basicHandler() chi.Router {
 		idStr := chi.URLParam(r, "id")
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Fprintf(w, "Unknown error: %v", err)
 			return
 		}
 		_ = s.content.Delete(r.Context(), id)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "Unknown error: %v", err)
+			return
+		}
 	})
 
 	return r
@@ -131,5 +172,5 @@ func (s *Server) ListenCtxForGT(srv *http.Server) {
 // WaitForGT is the function for waiting until ListenCtxForGT it will work
 // С помощью канала функция позволяет дождаться исполнения Graceful Shutdown
 func (s *Server) WaitForGT() {
-	<-s.idleConsCh // блок до записи или закрытя канала
+	<-s.idleConsCh // блок до записи или закрытия канала
 }

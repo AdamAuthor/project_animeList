@@ -1,12 +1,12 @@
 package models
 
 type Anime struct {
-	ID          int    `json:"id" postgres:"id"`
-	Title       string `json:"title" postgres:"title"`
-	Author      string `json:"author" postgres:"author"`
-	ImageURL    string `json:"image_url" postgres:"image_url"`
-	Genre       string `json:"genre" postgres:"genre"`
-	ReleaseYear int    `json:"release_year" postgres:"release_year"`
+	ID          int    `json:"id" db:"id"`
+	Title       string `json:"title" db:"title"`
+	ImageURL    string `json:"image_url" db:"image_url"`
+	Author      string `json:"author" db:"author"`
+	Genre       string `json:"genre" db:"genre"`
+	ReleaseYear int    `json:"release_year" db:"release_year"`
 }
 
 type ContentFilter struct {
