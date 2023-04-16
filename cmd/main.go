@@ -18,19 +18,19 @@ func main() {
 	}
 	url := os.Getenv("URL")
 
-	store := postgres.NewDB()
-	if err := store.Connect(url); err != nil {
+	db := postgres.NewDB()
+	if err := db.Connect(url); err != nil {
 		panic(err)
 	}
-	defer func(store content.Content) {
-		err := store.Close()
+	defer func(database content.Database) {
+		err := database.Close()
 		if err != nil {
-			
+
 		}
-	}(store)
+	}(db)
 
 	//Creating and run new server
-	srv := http.NewServer(context.Background(), ":8080", store)
+	srv := http.NewServer(context.Background(), ":8080", db)
 	if err := srv.Run(); err != nil {
 		fmt.Println(err)
 	}

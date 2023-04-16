@@ -19,19 +19,19 @@ type Server struct {
 	ctx        context.Context
 	idleConsCh chan struct{}
 
-	// не самая лучшая практика. Обычно делается на уровне 3 слоев:
+	// Не самая лучшая практика. Обычно делается на уровне 3 слоев:
 	// бизнес логика, HTTP хэндлеры, база данных (пока не знаю как это сделать)
-	Address string
-	content content.Content
+	Address  string
+	database content.Database
 }
 
 // NewServer is the function for creating new server
 // Здесь мы создаём свой сервер
-func NewServer(ctx context.Context, address string, content content.Content) *Server {
+func NewServer(ctx context.Context, address string, database content.Database) *Server {
 	return &Server{
 		ctx:        ctx,
 		idleConsCh: make(chan struct{}),
-		content:    content,
+		database:   database,
 		Address:    address,
 	}
 }
@@ -40,7 +40,7 @@ func NewServer(ctx context.Context, address string, content content.Content) *Se
 // К тому же, вместо использования мультиплексера, используется роутер
 func (s *Server) basicHandler() chi.Router {
 	r := chi.NewRouter()
-
+	// Это часть кода посвящена СRUD-операциям для панели админа
 	// Create
 	r.Post("/content", func(w http.ResponseWriter, r *http.Request) {
 		nContent := new(models.Anime)
@@ -50,7 +50,7 @@ func (s *Server) basicHandler() chi.Router {
 			return
 		}
 
-		err := s.content.Create(r.Context(), nContent)
+		err := s.database.Content().Create(r.Context(), nContent)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "DB err: %v", err)
@@ -66,7 +66,7 @@ func (s *Server) basicHandler() chi.Router {
 			filter.Query = &searchQuery
 		}
 
-		nContent, err := s.content.All(r.Context(), filter)
+		nContent, err := s.database.Content().All(r.Context(), filter)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "DB err: %v", err)
@@ -85,7 +85,7 @@ func (s *Server) basicHandler() chi.Router {
 			return
 		}
 
-		nContent, err := s.content.ByID(r.Context(), id)
+		nContent, err := s.database.Content().ByID(r.Context(), id)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "Unknown error: %v", err)
@@ -103,7 +103,7 @@ func (s *Server) basicHandler() chi.Router {
 			fmt.Fprintf(w, "Unknown error: %v", err)
 			return
 		}
-
+		// Решил немного поиграться с валидацией
 		err := validation.ValidateStruct(
 			nContent,
 			validation.Field(&nContent.Title, validation.Required),
@@ -117,7 +117,7 @@ func (s *Server) basicHandler() chi.Router {
 			return
 		}
 
-		err = s.content.Update(r.Context(), nContent)
+		err = s.database.Content().Update(r.Context(), nContent)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "Unknown error: %v", err)
@@ -134,12 +134,90 @@ func (s *Server) basicHandler() chi.Router {
 			fmt.Fprintf(w, "Unknown error: %v", err)
 			return
 		}
-		_ = s.content.Delete(r.Context(), id)
+		_ = s.database.Content().Delete(r.Context(), id)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "Unknown error: %v", err)
 			return
 		}
+	})
+
+	// Тут у меня реализован живой поиск
+	r.Get("/contentSearch", func(w http.ResponseWriter, r *http.Request) {
+		queryValues := r.URL.Query()
+		filter := &models.ContentFilter{}
+		if searchQuery := queryValues.Get("query"); searchQuery != "" {
+			filter.Query = &searchQuery
+		}
+
+		nContent, err := s.database.Content().All(r.Context(), filter)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
+		}
+
+		if r.Header.Get("X-Requested-With") == "XMLHttpRequest" {
+			render.JSON(w, r, nContent)
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	})
+
+	//Здесь я реализую Избранное
+	// Create
+	r.Post("/favorites", func(w http.ResponseWriter, r *http.Request) {
+		favorite := new(models.Favorite)
+		if err := json.NewDecoder(r.Body).Decode(favorite); err != nil {
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			fmt.Fprintf(w, "Unknown error: %v", err)
+			return
+		}
+
+		err := s.database.Favorites().Create(r.Context(), favorite.UserID, favorite.ContentID)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
+		}
+		w.WriteHeader(http.StatusCreated)
+	})
+
+	// Read All in user
+	r.Get("/favorites", func(w http.ResponseWriter, r *http.Request) {
+		queryValues := r.URL.Query()
+		userId := queryValues.Get("query")
+		id, err := strconv.Atoi(userId)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Fprintf(w, "Unknown error: %v", err)
+			return
+		}
+		favorite, err := s.database.Favorites().All(r.Context(), id)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
+		}
+
+		render.JSON(w, r, favorite)
+	})
+
+	// Delete
+	r.Delete("/favorites/{id}", func(w http.ResponseWriter, r *http.Request) {
+		idStr := chi.URLParam(r, "id")
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Fprintf(w, "Unknown error: %v", err)
+			return
+		}
+
+		err = s.database.Favorites().Delete(r.Context(), id)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "Unknown error: %v", err)
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
 	})
 
 	return r
