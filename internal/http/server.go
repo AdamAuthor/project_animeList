@@ -142,6 +142,54 @@ func (s *Server) basicHandler() chi.Router {
 		}
 	})
 
+	// Пришла пора реализовать фильтрацию !!!
+
+	// Фильтрация по названию в алфавитном порядке
+	r.Get("/filterABC", func(w http.ResponseWriter, r *http.Request) {
+
+		filterABC, err := s.database.Content().FilterABC(r.Context())
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
+		}
+
+		render.JSON(w, r, filterABC)
+	})
+
+	// Фильтрация по жанру
+	r.Get("/filterGenre", func(w http.ResponseWriter, r *http.Request) {
+		queryValues := r.URL.Query()
+		filter := &models.ContentFilter{}
+		if searchQuery := queryValues.Get("query"); searchQuery != "" {
+			filter.Query = &searchQuery
+		}
+
+		nContent, err := s.database.Content().FilterGenre(r.Context(), filter)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
+		}
+
+		render.JSON(w, r, nContent)
+	})
+
+	// Фильтрация по автору
+	r.Get("/filterAuthor", func(w http.ResponseWriter, r *http.Request) {
+		queryValues := r.URL.Query()
+		filter := &models.ContentFilter{}
+		if searchQuery := queryValues.Get("query"); searchQuery != "" {
+			filter.Query = &searchQuery
+		}
+
+		nContent, err := s.database.Content().FilterAuthor(r.Context(), filter)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
+		}
+
+		render.JSON(w, r, nContent)
+	})
+
 	// Тут у меня реализован живой поиск
 	r.Get("/contentSearch", func(w http.ResponseWriter, r *http.Request) {
 		queryValues := r.URL.Query()

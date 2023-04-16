@@ -20,6 +20,57 @@ type RepositoryContent struct {
 	conn *sqlx.DB
 }
 
+func (D *RepositoryContent) FilterAuthor(ctx context.Context, filter *models.ContentFilter) ([]*models.Anime, error) {
+	var anime []*models.Anime
+	basicQuery := "SELECT * FROM anime"
+
+	if filter.Query != nil {
+		basicQuery = fmt.Sprintf("%s WHERE author ILIKE $1", basicQuery)
+		queryArg := "%" + *filter.Query + "%"
+		if err := D.conn.Select(&anime, basicQuery, queryArg); err != nil {
+			return nil, err
+		}
+
+		return anime, nil
+	}
+
+	if err := D.conn.Select(&anime, basicQuery); err != nil {
+		return nil, err
+	}
+
+	return anime, nil
+}
+
+func (D *RepositoryContent) FilterABC(ctx context.Context) ([]*models.Anime, error) {
+	var anime []*models.Anime
+	err := D.conn.Select(&anime, `SELECT * FROM anime ORDER BY title ASC`)
+	if err != nil {
+		return nil, err
+	}
+	return anime, nil
+}
+
+func (D *RepositoryContent) FilterGenre(ctx context.Context, filter *models.ContentFilter) ([]*models.Anime, error) {
+	var anime []*models.Anime
+	basicQuery := "SELECT * FROM anime"
+
+	if filter.Query != nil {
+		basicQuery = fmt.Sprintf("%s WHERE genre ILIKE $1", basicQuery)
+		queryArg := "%" + *filter.Query + "%"
+		if err := D.conn.Select(&anime, basicQuery, queryArg); err != nil {
+			return nil, err
+		}
+
+		return anime, nil
+	}
+
+	if err := D.conn.Select(&anime, basicQuery); err != nil {
+		return nil, err
+	}
+
+	return anime, nil
+}
+
 func NewContentRepository(conn *sqlx.DB) content.RepositoryContent {
 	return &RepositoryContent{conn: conn}
 }

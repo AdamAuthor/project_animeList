@@ -18,6 +18,9 @@ type RepositoryContent interface {
 	ByID(ctx context.Context, id int) (*models.Anime, error)
 	Update(ctx context.Context, anime *models.Anime) error
 	Delete(ctx context.Context, id int) error
+	FilterABC(ctx context.Context) ([]*models.Anime, error)
+	FilterGenre(ctx context.Context, filter *models.ContentFilter) ([]*models.Anime, error)
+	FilterAuthor(ctx context.Context, filter *models.ContentFilter) ([]*models.Anime, error)
 }
 
 type RepositoryFavorites interface {

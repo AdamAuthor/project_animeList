@@ -5,14 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c9baf3aa-e4f0-49fd-a64b-72b2252ba9a8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/internal/content/postgres/anime.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/content/postgres/favorites.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/internal/models/favorite.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/af4bc48e-4af4-4e7e-ae24-6b452cec8376.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/af4bc48e-4af4-4e7e-ae24-6b452cec8376.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/af4bc48e-4af4-4e7e-ae24-6b452cec8376/storage_v2/_src_/database/animeList.MkvRQg/schema/public.abK9xQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/af4bc48e-4af4-4e7e-ae24-6b452cec8376/storage_v2/_src_/database/animeList.MkvRQg/schema/public.abK9xQ.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/content/content.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/content/database.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/content/postgres/crudcat.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/content/postgres/connect.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/content/database.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/content/database.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/content/postgres/anime.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/content/postgres/anime.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/http/server.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/http/server.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
