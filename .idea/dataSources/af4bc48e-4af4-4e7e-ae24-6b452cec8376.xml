@@ -3,7 +3,7 @@
   <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.43">
     <root id="1">
       <DateStyle>dmy</DateStyle>
-      <IntrospectionStateNumber>995</IntrospectionStateNumber>
+      <IntrospectionStateNumber>1044</IntrospectionStateNumber>
       <ServerVersion>15.2</ServerVersion>
       <StartupTime>1681516804</StartupTime>
       <TimeZones>true ACDT
@@ -801,12 +801,12 @@ false Zulu
 13183||10|C|G
 13183||-9223372036854775808|U|G
 13183||10|U|G</Grants>
-      <IntrospectionStateNumber>995</IntrospectionStateNumber>
+      <IntrospectionStateNumber>1044</IntrospectionStateNumber>
       <ObjectId>16458</ObjectId>
       <Relations>sequence|table|16494|16495|1
-sequence|table|16514|16515|1
 sequence|table|16549|16550|1
 sequence|table|16568|16569|1
+sequence|table|16608|16609|1
 </Relations>
       <OwnerName>postgres</OwnerName>
     </database>
@@ -4220,7 +4220,7 @@ sequence|table|16568|16569|1
     <schema id="262" parent="2" name="public">
       <Comment>standard public schema</Comment>
       <Current>1</Current>
-      <IntrospectionStateNumber>995</IntrospectionStateNumber>
+      <IntrospectionStateNumber>1044</IntrospectionStateNumber>
       <ObjectId>2200</ObjectId>
       <StateNumber>518</StateNumber>
       <OwnerName>pg_database_owner</OwnerName>
@@ -4233,8 +4233,8 @@ sequence|table|16568|16569|1
     </sequence>
     <sequence id="264" parent="262" name="favorites_id_seq">
       <DataType>integer|0s</DataType>
-      <ObjectId>16514</ObjectId>
-      <StateNumber>758</StateNumber>
+      <ObjectId>16608</ObjectId>
+      <StateNumber>1043</StateNumber>
       <OwnerName>postgres</OwnerName>
     </sequence>
     <sequence id="265" parent="262" name="recommendations_id_seq">
@@ -4251,13 +4251,13 @@ sequence|table|16568|16569|1
     </sequence>
     <table id="267" parent="262" name="anime">
       <ObjectId>16569</ObjectId>
-      <StateNumber>969</StateNumber>
+      <StateNumber>1043</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>postgres</OwnerName>
     </table>
     <table id="268" parent="262" name="favorites">
-      <ObjectId>16515</ObjectId>
-      <StateNumber>758</StateNumber>
+      <ObjectId>16609</ObjectId>
+      <StateNumber>1043</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>postgres</OwnerName>
     </table>
@@ -4315,7 +4315,13 @@ sequence|table|16568|16569|1
       <StateNumber>873</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <index id="277" parent="267" name="anime_pkey">
+    <column id="277" parent="267" name="views">
+      <DataType>integer|0s</DataType>
+      <Position>8</Position>
+      <StateNumber>998</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <index id="278" parent="267" name="anime_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16575</ObjectId>
@@ -4324,63 +4330,62 @@ sequence|table|16568|16569|1
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="278" parent="267" name="anime_pkey">
+    <key id="279" parent="267" name="anime_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16576</ObjectId>
       <Primary>1</Primary>
       <StateNumber>844</StateNumber>
       <UnderlyingIndexId>16575</UnderlyingIndexId>
     </key>
-    <column id="279" parent="268" name="id">
+    <column id="280" parent="268" name="id">
       <DataType>integer|0s</DataType>
       <DefaultExpression>nextval(&apos;favorites_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>1</Position>
-      <StateNumber>758</StateNumber>
+      <StateNumber>1043</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <column id="280" parent="268" name="userID">
+    <column id="281" parent="268" name="userid">
       <DataType>integer|0s</DataType>
-      <NotNull>1</NotNull>
       <Position>2</Position>
-      <StateNumber>883</StateNumber>
+      <StateNumber>1043</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <column id="281" parent="268" name="contentID">
+    <column id="282" parent="268" name="animeid">
       <DataType>integer|0s</DataType>
-      <NotNull>1</NotNull>
       <Position>3</Position>
-      <StateNumber>886</StateNumber>
+      <StateNumber>1043</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <foreign-key id="282" parent="268" name="favorites_user_id_fkey">
-      <ColNames>userID</ColNames>
+    <foreign-key id="283" parent="268" name="favorites_animeid_fkey">
+      <ColNames>animeid</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16521</ObjectId>
+      <ObjectId>16615</ObjectId>
+      <OnDelete>cascade</OnDelete>
       <RefColNames>id</RefColNames>
       <RefColPositions>1</RefColPositions>
-      <StateNumber>758</StateNumber>
-      <RefTableId>16495</RefTableId>
-      <RefTableName>users</RefTableName>
+      <StateNumber>1043</StateNumber>
+      <RefTableId>16569</RefTableId>
+      <RefTableName>anime</RefTableName>
       <RefTableKind>table</RefTableKind>
     </foreign-key>
-    <index id="283" parent="268" name="favorites_pkey">
+    <index id="284" parent="268" name="favorites_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16519</ObjectId>
+      <ObjectId>16613</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>758</StateNumber>
+      <StateNumber>1043</StateNumber>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="284" parent="268" name="favorites_pkey">
+    <key id="285" parent="268" name="favorites_pkey">
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>16520</ObjectId>
+      <ObjectId>16614</ObjectId>
       <Primary>1</Primary>
-      <StateNumber>758</StateNumber>
-      <UnderlyingIndexId>16519</UnderlyingIndexId>
+      <StateNumber>1043</StateNumber>
+      <UnderlyingIndexId>16613</UnderlyingIndexId>
     </key>
-    <column id="285" parent="269" name="id">
+    <column id="286" parent="269" name="id">
       <DataType>integer|0s</DataType>
       <DefaultExpression>nextval(&apos;recommendations_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
@@ -4388,21 +4393,21 @@ sequence|table|16568|16569|1
       <StateNumber>760</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <column id="286" parent="269" name="userID">
+    <column id="287" parent="269" name="userID">
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>889</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <column id="287" parent="269" name="contentID">
+    <column id="288" parent="269" name="contentID">
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>892</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <foreign-key id="288" parent="269" name="recommendations_user_id_fkey">
+    <foreign-key id="289" parent="269" name="recommendations_user_id_fkey">
       <ColNames>userID</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16556</ObjectId>
@@ -4413,7 +4418,7 @@ sequence|table|16568|16569|1
       <RefTableName>users</RefTableName>
       <RefTableKind>table</RefTableKind>
     </foreign-key>
-    <index id="289" parent="269" name="recommendations_pkey">
+    <index id="290" parent="269" name="recommendations_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16554</ObjectId>
@@ -4422,14 +4427,14 @@ sequence|table|16568|16569|1
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="290" parent="269" name="recommendations_pkey">
+    <key id="291" parent="269" name="recommendations_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16555</ObjectId>
       <Primary>1</Primary>
       <StateNumber>760</StateNumber>
       <UnderlyingIndexId>16554</UnderlyingIndexId>
     </key>
-    <column id="291" parent="270" name="id">
+    <column id="292" parent="270" name="id">
       <DataType>integer|0s</DataType>
       <DefaultExpression>nextval(&apos;users_id_seq&apos;::regclass)</DefaultExpression>
       <NotNull>1</NotNull>
@@ -4437,40 +4442,40 @@ sequence|table|16568|16569|1
       <StateNumber>758</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <column id="292" parent="270" name="email">
+    <column id="293" parent="270" name="email">
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>758</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="293" parent="270" name="password">
+    <column id="294" parent="270" name="password">
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>758</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="294" parent="270" name="name">
+    <column id="295" parent="270" name="name">
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StateNumber>758</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="295" parent="270" name="gender">
+    <column id="296" parent="270" name="gender">
       <DataType>varchar(10)|0s</DataType>
       <Position>5</Position>
       <StateNumber>758</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="296" parent="270" name="age">
+    <column id="297" parent="270" name="age">
       <DataType>integer|0s</DataType>
       <Position>6</Position>
       <StateNumber>758</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <index id="297" parent="270" name="users_pkey">
+    <index id="298" parent="270" name="users_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16501</ObjectId>
@@ -4479,7 +4484,7 @@ sequence|table|16568|16569|1
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="298" parent="270" name="users_email_key">
+    <index id="299" parent="270" name="users_email_key">
       <ColNames>email</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16503</ObjectId>
@@ -4490,14 +4495,14 @@ sequence|table|16568|16569|1
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="299" parent="270" name="users_pkey">
+    <key id="300" parent="270" name="users_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16502</ObjectId>
       <Primary>1</Primary>
       <StateNumber>758</StateNumber>
       <UnderlyingIndexId>16501</UnderlyingIndexId>
     </key>
-    <key id="300" parent="270" name="users_email_key">
+    <key id="301" parent="270" name="users_email_key">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>16504</ObjectId>
       <StateNumber>758</StateNumber>

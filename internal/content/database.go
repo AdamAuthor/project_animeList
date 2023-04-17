@@ -21,6 +21,9 @@ type RepositoryContent interface {
 	FilterABC(ctx context.Context) ([]*models.Anime, error)
 	FilterGenre(ctx context.Context, filter *models.ContentFilter) ([]*models.Anime, error)
 	FilterAuthor(ctx context.Context, filter *models.ContentFilter) ([]*models.Anime, error)
+	NewAnime(ctx context.Context) ([]*models.Anime, error)
+	PopularAnime(ctx context.Context) ([]*models.Anime, error)
+	UserRec(ctx context.Context, id int) ([]*models.Anime, error)
 }
 
 type RepositoryFavorites interface {

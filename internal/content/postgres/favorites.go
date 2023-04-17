@@ -19,8 +19,8 @@ type RepositoryFavorites struct {
 	conn *sqlx.DB
 }
 
-func (r RepositoryFavorites) Create(ctx context.Context, userID int, contentID int) error {
-	_, err := r.conn.Exec(`INSERT INTO favorites ("userID", "contentID") VALUES ($1, $2)`, userID, contentID)
+func (r RepositoryFavorites) Create(ctx context.Context, userID int, animeID int) error {
+	_, err := r.conn.Exec(`INSERT INTO favorites (userid, animeid) VALUES ($1, $2)`, userID, animeID)
 	if err != nil {
 		return err
 	}
@@ -29,7 +29,7 @@ func (r RepositoryFavorites) Create(ctx context.Context, userID int, contentID i
 
 func (r RepositoryFavorites) All(ctx context.Context, userID int) ([]*models.Favorite, error) {
 	var favorites []*models.Favorite
-	err := r.conn.Select(&favorites, `SELECT favorites.id, favorites."userID", to_json(anime.*) as anime FROM favorites JOIN anime ON favorites."contentID"=anime.id WHERE favorites."userID"=$1`, userID)
+	err := r.conn.Select(&favorites, `SELECT favorites.id, favorites.userid, to_json(anime.*) as anime FROM favorites JOIN anime ON favorites.animeid=anime.id WHERE favorites.userid=$1`, userID)
 	if err != nil {
 		return nil, err
 	}

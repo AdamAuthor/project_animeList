@@ -50,7 +50,21 @@ func (s *Server) basicHandler() chi.Router {
 			return
 		}
 
-		err := s.database.Content().Create(r.Context(), nContent)
+		// Решил немного поиграться с валидацией
+		err := validation.ValidateStruct(
+			nContent,
+			validation.Field(&nContent.Title, validation.Required),
+			validation.Field(&nContent.Genre, validation.Required),
+			validation.Field(&nContent.ImageURL, validation.Required),
+			validation.Field(&nContent.Author, validation.Required),
+			validation.Field(&nContent.ReleaseYear, validation.Required))
+		if err != nil {
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			fmt.Fprintf(w, "Unknown error: %v", err)
+			return
+		}
+
+		err = s.database.Content().Create(r.Context(), nContent)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "DB err: %v", err)
@@ -103,21 +117,8 @@ func (s *Server) basicHandler() chi.Router {
 			fmt.Fprintf(w, "Unknown error: %v", err)
 			return
 		}
-		// Решил немного поиграться с валидацией
-		err := validation.ValidateStruct(
-			nContent,
-			validation.Field(&nContent.Title, validation.Required),
-			validation.Field(&nContent.Genre, validation.Required),
-			validation.Field(&nContent.ImageURL, validation.Required),
-			validation.Field(&nContent.Author, validation.Required),
-			validation.Field(&nContent.ReleaseYear, validation.Required))
-		if err != nil {
-			w.WriteHeader(http.StatusUnprocessableEntity)
-			fmt.Fprintf(w, "Unknown error: %v", err)
-			return
-		}
 
-		err = s.database.Content().Update(r.Context(), nContent)
+		err := s.database.Content().Update(r.Context(), nContent)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "Unknown error: %v", err)
@@ -221,7 +222,7 @@ func (s *Server) basicHandler() chi.Router {
 			return
 		}
 
-		err := s.database.Favorites().Create(r.Context(), favorite.UserID, favorite.ContentID)
+		err := s.database.Favorites().Create(r.Context(), favorite.UserID, favorite.AnimeID)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "DB err: %v", err)
@@ -266,6 +267,52 @@ func (s *Server) basicHandler() chi.Router {
 		}
 
 		w.WriteHeader(http.StatusOK)
+	})
+
+	// Здесь у меня реализована система рекомендаций
+
+	// Новинки
+	r.Get("/new", func(w http.ResponseWriter, r *http.Request) {
+
+		anime, err := s.database.Content().NewAnime(r.Context())
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
+		}
+
+		render.JSON(w, r, anime)
+	})
+
+	// Популярные
+	r.Get("/popular", func(w http.ResponseWriter, r *http.Request) {
+
+		anime, err := s.database.Content().PopularAnime(r.Context())
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
+		}
+
+		render.JSON(w, r, anime)
+	})
+
+	// Индивидуальные рекомендации юзеру
+	r.Get("/indRec", func(w http.ResponseWriter, r *http.Request) {
+		queryValues := r.URL.Query()
+		userId := queryValues.Get("query")
+		id, err := strconv.Atoi(userId)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Fprintf(w, "Unknown error: %v", err)
+			return
+		}
+
+		anime, err := s.database.Content().UserRec(r.Context(), id)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
+		}
+
+		render.JSON(w, r, anime)
 	})
 
 	return r
