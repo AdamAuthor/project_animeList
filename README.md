@@ -30,17 +30,6 @@
         - image
         - genre
         - title        
-            
-            JSON пример:
-              {
-                "id": 20,
-                "title": "Clannad",
-                "author": "Key",
-                "genre": "Romance, Drama, Supernatural",
-                "year": 2007,
-                "image": "https://example.com/images/clannad.jpg",
-                "views": 13000
-              }
         
     - **Поиск**
         - Живой поиск по названию товара
