@@ -29,7 +29,8 @@
         - views
         - image
         - genre
-        - title
+        - title        
+            
             JSON пример:
               {
                 "id": 20,
