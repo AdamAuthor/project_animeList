@@ -10,6 +10,7 @@ type Database interface {
 	Close() error
 	Content() RepositoryContent
 	Favorites() RepositoryFavorites
+	User() UserRepo
 }
 
 type RepositoryContent interface {
@@ -30,4 +31,10 @@ type RepositoryFavorites interface {
 	Create(ctx context.Context, userID int, contentID int) error
 	All(ctx context.Context, userID int) ([]*models.Favorite, error)
 	Delete(ctx context.Context, id int) error
+}
+
+type UserRepo interface {
+	Create(ctx context.Context, user *models.User) error
+	Parse(ctx context.Context, email string, password string) ([]*models.User, error)
+	ResetPassword(ctx context.Context, email string, password string) error
 }

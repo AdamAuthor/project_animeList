@@ -14,7 +14,3 @@ type Genre struct {
 	Name  string `db:"genre"`
 	Count int    `db:"count"`
 }
-
-type ContentFilter struct {
-	Query *string `json:"query"`
-}

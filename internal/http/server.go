@@ -142,6 +142,55 @@ func (s *Server) basicHandler() chi.Router {
 			return
 		}
 	})
+	// 6 утра 18-го числа... Я уже не сплю нормально четвёртый день... Наконец, пришла пора решистрацию сделать
+	// Поскольку времени не хватает, регистрация довольно костыльная.
+	// Ну, хоть что-то. Это ведь лучше, чем ничего?)
+
+	// Registration user
+	r.Post("/registration", func(w http.ResponseWriter, r *http.Request) {
+		user := new(models.User)
+		if err := json.NewDecoder(r.Body).Decode(user); err != nil {
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			fmt.Fprintf(w, "Unknown error: %v", err)
+			return
+		}
+
+		err := s.database.User().Create(r.Context(), user)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "DB err: %v", err)
+		}
+		w.WriteHeader(http.StatusCreated)
+	})
+
+	// Reset password
+	r.Put("/reset", func(w http.ResponseWriter, r *http.Request) {
+		user := new(models.User)
+		if err := json.NewDecoder(r.Body).Decode(user); err != nil {
+			w.WriteHeader(http.StatusUnprocessableEntity)
+			fmt.Fprintf(w, "Unknown error: %v", err)
+			return
+		}
+
+		err := s.database.User().ResetPassword(r.Context(), user.Email, user.Password)
+		if err != nil {
+			return
+		}
+	})
+
+	// Login user
+	r.Get("/login/{email}/{password}", func(w http.ResponseWriter, r *http.Request) {
+		email := chi.URLParam(r, "email")
+		password := chi.URLParam(r, "password")
+		nContent, err := s.database.User().Parse(r.Context(), email, password)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "Unknown error: %v", err)
+			return
+		}
+
+		render.JSON(w, r, nContent)
+	})
 
 	// Пришла пора реализовать фильтрацию !!!
 

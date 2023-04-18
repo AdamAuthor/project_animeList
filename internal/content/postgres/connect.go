@@ -14,6 +14,7 @@ type Database struct {
 	conn     *sqlx.DB
 	content  content.RepositoryContent
 	favorite content.RepositoryFavorites
+	user     content.UserRepo
 }
 
 func NewDB() content.Database {
